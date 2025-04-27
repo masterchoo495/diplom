@@ -64,7 +64,7 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 ---
 
 ## Инфраструктура
-Согласно условию задания для развертывания виртуальнхы машин использую Terraform.  
+Согласно условию задания для развертывания виртуальных машин использую Terraform.  
 Сразу разворачиваю все необходимые виртуальные машины минимальной конфигурации.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf1.png)  
 
@@ -73,10 +73,22 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 Развернутые виртуальные машины.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/cloud-vm.png)  
 
-Мной выбран вариант установки и запуска ansible непосредственно на bastion host. Через cloud-init скрипты в момент развертывании инфраструктуры я сразу создаю нужные плейбуки на бастионном хосте и далее с него же буду их запускать для установки и настройки инфраструктуры.
+Мной выбран вариант установки и запуска ansible непосредственно на bastion host. Через cloud-init скрипты в момент развертывании инфраструктуры я сразу создаю нужные плейбуки на бастионном хосте и далее с него же буду их запускать для установки и настройки инфраструктуры.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/ansible.png)  
+
+Проверка доступности виртуальных машин.
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/ansible-ping.png)  
 
 ### Сайт
- 
+На этапе выше были созданы две виртуальные машины vm-web1 и vm-web2 в разных зонах доступности для установки nginx.  
+
+Устанавливаю nginx через ansible.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-nginx.png)  
+
+Правлю выводимое по умолчанию сообщение при обращении к nginx в /var/www/html/index.nginx-debian.html на vm-web1 и vm-web2 для наглядности работы балансировщика.  
+Теперь, обновляя страницу в браузере, мы видим поочередное обращение на vm-web1 и vm-web2.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx1.png)  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx2.png)  
 
 ### Мониторинг
 
