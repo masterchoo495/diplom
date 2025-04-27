@@ -70,35 +70,35 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf2.png)  
 
-Развернутые виртуальные машины.  
+Развернутые виртуальные машины  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/cloud-vm.png)  
 
 Мной выбран вариант установки и запуска ansible непосредственно на bastion host. Через cloud-init скрипты в момент развертывании инфраструктуры я сразу создаю нужные плейбуки на бастионном хосте и далее с него же буду их запускать для установки и настройки инфраструктуры.  
 
-Проверка версии ansible, содержимого файла inventory и наличия плейбуков. 
+Проверка версии ansible, содержимого файла inventory и наличия плейбуков 
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/ansible.png)  
 
-Проверка доступности виртуальных машин.  
+Проверка доступности виртуальных машин  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/ansible-ping.png)  
 
 ### Сайт  
-На этапе выше были созданы две виртуальные машины vm-web1 и vm-web2 в разных зонах доступности для установки nginx.  
+На этапе выше были созданы две виртуальные машины vm-web1 и vm-web2 в разных зонах доступности для установки nginx  
 
-Устанавливаю на них nginx через ansible.  
+Устанавливаю на них nginx через ansible  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-nginx.png)  
 
-Настройка балансировщика.  
+Настройка балансировщика  
 
-1. Создайте [Target Group](https://cloud.yandex.com/docs/application-load-balancer/concepts/target-group), включите в неё две созданных ВМ.  
+1. Создайте [Target Group](https://cloud.yandex.com/docs/application-load-balancer/concepts/target-group), включите в неё две созданных ВМ  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/target-group.png)  
 
-2. Создайте [Backend Group](https://cloud.yandex.com/docs/application-load-balancer/concepts/backend-group), настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP.  
+2. Создайте [Backend Group](https://cloud.yandex.com/docs/application-load-balancer/concepts/backend-group), настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/backend-group.png)  
 
-2. Создайте [HTTP router](https://cloud.yandex.com/docs/application-load-balancer/concepts/http-router). Путь укажите — /, backend group — созданную ранее.  
+2. Создайте [HTTP router](https://cloud.yandex.com/docs/application-load-balancer/concepts/http-router). Путь укажите — /, backend group — созданную ранее  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/http-router.png)  
 
-4. Создайте [Application load balancer](https://cloud.yandex.com/en/docs/application-load-balancer/) для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80.  
+4. Создайте [Application load balancer](https://cloud.yandex.com/en/docs/application-load-balancer/) для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/alb.png)  
 
 Healthcheck  
@@ -108,12 +108,12 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/check-balancer.png)  
 
 Правлю выводимое по умолчанию сообщение при обращении к nginx в /var/www/html/index.nginx-debian.html на vm-web1 и vm-web2 для наглядности работы балансировщика.  
-Теперь, обновляя страницу в браузере, мы видим поочередное обращение на vm-web1 и vm-web2.  
+Теперь, обновляя страницу в браузере, мы видим поочередное обращение на vm-web1 и vm-web2  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx1.png)  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx2.png)  
 
 ### Мониторинг  
-Установка Zabbix Server на созданную ранее vm-zabbix через ansible.  
+Установка Zabbix Server на созданную ранее vm-zabbix через ansible  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix.png)  
 
 Переход по http://158.160.69.173  
@@ -128,39 +128,42 @@ Healthcheck
 Установка Zabbix Agent  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix-agent.png)  
 
+Настроенные дашборды  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-dash.png)  
+
 ### Логи  
-Установка Elasticsearch на созданную ранее vm-elastic через ansible.  
+Установка Elasticsearch на созданную ранее vm-elastic через ansible  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-elastic.png)  
 
-Проверка Elasticsearch.  
+Проверка Elasticsearch  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/elastic-check.png)  
 
-Установка filebeat на на vm-web1 и vm-web2 через ansible.  
+Установка filebeat на на vm-web1 и vm-web2 через ansible  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-filebeat.png)  
 
-Установка Kibana на созданную ранее vm-kibana через ansible.  
+Установка Kibana на созданную ранее vm-kibana через ansible  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-kibana.png)  
 
 Проверка Kibana  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-web.png)  
 
-Настраиваю.
+Настраиваю
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-int.png)  
 
-И проверяю наличие событий. 
+И проверяю наличие событий 
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-web2.png)  
 
 ### Сеть  
-Созданная VPC.  
+Созданная VPC  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/vpc.png)  
 
-Созданные Security Groups.  
+Созданные Security Groups  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/sec-groups.png)  
 
 ### Резервное копирование  
-Расписание снапшотов.  
+Расписание снапшотов  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snap-schedule.png)  
 
-Создавшиеся по расписанию снимки.  
+Создавшиеся по расписанию снимки  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snapshots.png)  
 
