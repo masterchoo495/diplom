@@ -111,7 +111,17 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx2.png)  
 
 ### Мониторинг
+Установка Zabbix Server через ansible.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix.png)  
 
+Переход по http://158.160.69.173  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-apache.png)  
+
+Переход по http://158.160.69.173/zabbix и завершение настройки  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-web.png)  
+
+Веб-интерфейс Zabbix Server  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-server.png)  
 
 ### Логи
 
