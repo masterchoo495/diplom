@@ -64,13 +64,14 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 ---
 
 ## Инфраструктура
-Согласно условию задания для развертывания виртуальнхы машин использую Terraform.
-Сразу разворачиваю все необходимые виртуальные машины.
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf11.png)
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf2.png)
+Согласно условию задания для развертывания виртуальнхы машин использую Terraform.  
+Сразу разворачиваю все необходимые виртуальные машины.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf1.png)  
 
-Развернутые виртуальные машины.
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/cloud-vm.png)
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf2.png)  
+
+Развернутые виртуальные машины.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/cloud-vm.png)  
 
 ### Сайт
  
