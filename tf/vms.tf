@@ -229,12 +229,12 @@ resource "local_file" "inventory" {
   filename = "./hosts.ini"
 }
 
-#----------create shapshot schedule (every day at 4:00 am)
+#----------create shapshot schedule (every day at 1:00 am)
 resource "yandex_compute_snapshot_schedule" "diplom" {
   name = "diplom-snap"
 
   schedule_policy {
-    expression = "00 19 ? * *"
+    expression = "0 1 ? * *"
   }
 
   snapshot_count = 1
