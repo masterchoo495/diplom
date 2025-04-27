@@ -114,7 +114,7 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx2.png)  
 
 ### Мониторинг  
-Установка Zabbix Server на созданную ранее vm-zabbix через ansible  
+Установка Zabbix Server через ansible на созданную ранее vm-zabbix  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix.png)  
 
 Переход по http://158.160.69.173  
