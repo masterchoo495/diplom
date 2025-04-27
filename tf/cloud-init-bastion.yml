@@ -1,0 +1,338 @@
+#cloud-config
+users:
+  - name: user
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMxrxTgpnMiMbI89sxGqiUtSZ0YypGKxg5cP4xwFFpUk ubuntu@vm1
+
+write_files:
+
+#copy private key on bastion host
+  - path: "/home/user/.ssh/id_ed25519"
+    permissions: "600"
+    content: |
+      -----BEGIN OPENSSH PRIVATE KEY-----
+      b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+      QyNTUxOQAAACDMa8U4KZzIjGyPPbMRqolLUmdGMqRisYOXD+McBRaVJAAAAJAlbvevJW73
+      rwAAAAtzc2gtZWQyNTUxOQAAACDMa8U4KZzIjGyPPbMRqolLUmdGMqRisYOXD+McBRaVJA
+      AAAEAJSxHb2pAByG+JmGE+NDKq/PAs7RtdB8jk/82qklTXGMxrxTgpnMiMbI89sxGqiUtS
+      Z0YypGKxg5cP4xwFFpUkAAAACnVidW50dUB2bTEBAgM=
+      -----END OPENSSH PRIVATE KEY-----
+    defer: true
+
+#create script for ansible install on bastion host
+  - path: "/usr/local/etc/startup.sh"
+    permissions: "755"
+    content: |
+      #!/bin/bash
+      apt-get update
+      apt-get install -y ansible
+      chown user:user /home/user/.ssh/id_ed25519
+    defer: true
+
+#create ansible config
+  - path: "/home/user/ansible.cfg"
+    permissions: "664"
+    content: |
+      [defaults]
+      inventory=/home/user/inventory
+      remote_user=user
+    defer: true
+
+#create ansible inventory file
+  - path: "/home/user/inventory"
+    permissions: "664"
+    content: |
+      [web]
+      vm-web1.ru-central1.internal
+      vm-web2.ru-central1.internal
+
+      [zabbix]
+      vm-zabbix.ru-central1.internal
+
+      [kibana]
+      vm-kibana.ru-central1.internal
+
+      [elastic]
+      vm-elastic.ru-central1.internal
+    defer: true
+  
+#create ansible playbook for install nginx 
+  - path: "/home/user/nginx.yaml"
+    permissions: "664"
+    content: |
+      ---
+      - name: Install Nginx
+        hosts: web
+        become: true
+        
+        tasks:
+        - name: Install Nginx
+          apt:
+            name:
+             - nginx
+            state: present
+            update_cache: yes
+    defer: true
+
+#create ansible playbook for install zabbix
+  - path: "/home/user/zabbix.yaml"
+    permissions: "664"
+    content: |
+      ---
+      - name: Install Zabbix
+        hosts: zabbix
+        become: true
+        vars:
+          pass_zabbixdb: zabbix
+
+        tasks:
+          - name: Add Zabbix repository
+            shell: wget https://repo.zabbix.com/zabbix/6.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_6.0-4+ubuntu22.04_all.deb
+            args:
+              chdir: /tmp
+
+          - name: Install Zabbix package
+            shell: dpkg -i zabbix-release_6.0-4+ubuntu22.04_all.deb
+            args:
+              chdir: /tmp
+
+          - name: Update apt cache
+            apt:
+              update_cache: yes
+
+          - name: Install Zabbix packages
+            apt:
+              name:
+                - apache2
+                - postgresql
+                - zabbix-server-pgsql
+                - zabbix-frontend-php
+                - php8.1-pgsql
+                - zabbix-apache-conf
+                - zabbix-sql-scripts
+                - zabbix-agent
+              state: present
+
+          - name: Create user PostgreSQL for Zabbix
+            expect:
+              command: sudo -u postgres createuser --pwprompt zabbix
+              responses:
+                (?i).*(Enter password for new role)(.*):
+                - '{{ pass_zabbixdb }}'
+                (?i).*(Enter it again)(.*):
+                - '{{ pass_zabbixdb }}'
+
+          - name: Create database PostgreSQL for Zabbix
+            shell: >
+              sudo -u postgres createdb -O zabbix zabbix
+
+          - name: Import schema
+            shell:
+              zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
+
+          - name: Set DBPassword in Zabbix config
+            lineinfile:
+              path: /etc/zabbix/zabbix_server.conf
+              regexp: '^DBPassword='
+              line: 'DBPassword=zabbix'
+
+          - name: Restart Zabbix
+            systemd:
+              name: "{{ item }}"
+              state: restarted
+              enabled: yes
+            loop:
+              - apache2
+              - zabbix-server
+              - zabbix-agent
+    defer: true
+
+#create ansible playbook for install zabbix-agent
+  - path: "/home/user/zabbix-agent.yaml"
+    permissions: "664"
+    content: |
+      ---
+      - name: Install Zabbix Agent on web servers
+        hosts: web
+        become: true
+        tasks:
+          - name: Install Zabbix Agent
+            apt:
+              name:
+                - zabbix-agent
+              state: present
+
+          - name: Copy Zabbix Agent config
+            template:
+              src: /home/user/zabbix_agentd.conf.j2
+              dest: /etc/zabbix/zabbix_agentd.conf
+            notify: 
+              - restart zabbix-agent
+
+        handlers:
+          - name: restart zabbix-agent
+            service:
+              name: zabbix-agent
+              state: restarted
+    defer: true
+
+#create ansible playbook for install nginx
+  - path: "/home/user/zabbix_agentd.conf.j2"
+    permissions: "664"
+    content: |
+      Server=vm-zabbix
+      LogFile=/var/log/zabbix-agent/zabbix_agentd.log
+    defer: true
+
+  - path: "/home/user/elasticsearch.yaml"
+    permissions: "644"
+    content: |
+      ---
+      - name: Install Elastic
+        hosts: elastic
+        become: yes
+
+        tasks:
+        - name: Update apt cache
+          apt:
+            update_cache: yes
+
+        - name: Install Elasticsearch
+          apt:
+            deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/e/elasticsearch/elasticsearch-8.8.0-amd64.deb"
+
+        - name: Copy Elasticsearch config file
+          copy:
+            src: /home/user/elasticsearch.yml
+            dest: /etc/elasticsearch/elasticsearch.yml
+
+        - name: daemon-reload, enable and start Elasticsearch
+          systemd:
+            daemon-reload: true
+            name: elasticsearch.service
+            enabled: true
+            state: started
+    defer: true
+
+#create elasticsearch config file
+  - path: "/home/user/elasticsearch.yml"
+    content: |
+      path.data: /var/lib/elasticsearch
+      path.logs: /var/log/elasticsearch
+      network.host: 0.0.0.0
+      http.port: 9200
+      xpack.security.enabled: false
+      xpack.security.enrollment.enabled: false
+      xpack.security.http.ssl:
+        enabled: false
+        keystore.path: certs/http.p12
+      xpack.security.transport.ssl:
+        enabled: false
+        verification_mode: certificate
+        keystore.path: certs/transport.p12
+        truststore.path: certs/transport.p12
+      cluster.initial_master_nodes: ["vm-elastic"]
+      http.host: 0.0.0.0
+    defer: true
+
+#create ansible playbook for install filebeat
+  - path: "/home/user/filebeat.yaml"
+    content: |
+      ---
+      - name: Install Filebeat
+        hosts: web
+        become: yes
+        vars:
+          vm_kibana: vm-kibana:5601
+          vm_elastic: vm-elastic:9200
+        gather_facts: true
+        
+        tasks:
+        - name: Update apt cache
+          apt:
+            update_cache: yes
+
+        - name: Install Filebeat
+          apt:
+            deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/f/filebeat/filebeat-8.8.0-amd64.deb"
+
+        - name: Copy Filebeat configuration file
+          template:
+            src: /home/user/filebeat.yml.j2
+            dest: /etc/filebeat/filebeat.yml
+
+        - name: Enable and start Filebeat
+          systemd:
+            name: filebeat.service
+            enabled: true
+            state: started
+    defer: true
+
+#create filebeat config file
+  - path: "/home/user/filebeat.yml.j2"
+    content: |
+      filebeat.inputs:
+      - type: log
+        enabled: true
+        paths:
+          - /var/log/nginx/access.log
+          - /var/log/nginx/error.log
+      filebeat.config.modules:
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: false
+      setup.template.settings:
+        index.number_of_shards: 1
+      setup.kibana:
+        host: ["{{vm_kibana}}"]
+      output.elasticsearch:
+        hosts: ["{{vm_elastic}}"]
+      processors:
+        - add_host_metadata:
+            when.not.contains.tags: forwarded
+        - add_cloud_metadata: ~
+        - add_docker_metadata: ~
+        - add_kubernetes_metadata: ~
+    defer: true
+
+#create ansible playbook for install kibana
+  - path: "/home/user/kibana.yaml"
+    content: |
+      ---
+      - name: Install kibana
+        hosts: kibana
+        become: yes
+        gather_facts: true
+
+        tasks:
+        - name: Install Kibana
+          apt:
+            deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/k/kibana/kibana-8.8.0-amd64.deb"
+
+        - name: Copy Kibana configuration file
+          template:
+            src: /home/user/kibana.yml.j2
+            dest: /etc/kibana/kibana.yml
+  
+        - name: daemon-reload, enable and start Kibana
+          systemd:
+            daemon-reload: true
+            name: kibana.service
+            enabled: true
+            state: started
+    defer: true
+
+#create kibana config file
+  - path: "/home/user/kibana.yml.j2"
+    content: |
+      server.port: 5601
+      server.host: "0.0.0.0"
+      elasticsearch.hosts: ["http://vm-elastic:9200"]
+    defer: true
+
+#launch script
+runcmd:
+  - ["/usr/local/etc/startup.sh"]
+
