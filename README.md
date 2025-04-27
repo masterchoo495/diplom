@@ -90,16 +90,16 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 Настройка балансировщика  
 
-1. Создайте [Target Group](https://cloud.yandex.com/docs/application-load-balancer/concepts/target-group), включите в неё две созданных ВМ  
+1. Создайте Target Group, включите в неё две созданных ВМ  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/target-group.png)  
 
-2. Создайте [Backend Group](https://cloud.yandex.com/docs/application-load-balancer/concepts/backend-group), настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP  
+2. Создайте Backend Group, настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/backend-group.png)  
 
-2. Создайте [HTTP router](https://cloud.yandex.com/docs/application-load-balancer/concepts/http-router). Путь укажите — /, backend group — созданную ранее  
+2. Создайте HTTP router. Путь укажите — /, backend group — созданную ранее  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/http-router.png)  
 
-4. Создайте [Application load balancer](https://cloud.yandex.com/en/docs/application-load-balancer/) для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80  
+4. Создайте Application load balancer для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/alb.png)  
 
 Healthcheck  
