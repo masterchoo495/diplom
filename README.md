@@ -63,7 +63,7 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 ---
 
-## Инфраструктура
+## Инфраструктура  
 Согласно условию задания для развертывания виртуальных машин использую Terraform.  
 Сразу разворачиваю все необходимые виртуальные машины минимальной конфигурации.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/tf1.png)  
@@ -78,10 +78,10 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 Проверка версии ansible, содержимого файла inventory и наличия плейбуков. 
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/ansible.png)  
 
-Проверка доступности виртуальных машин.
+Проверка доступности виртуальных машин.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/ansible-ping.png)  
 
-### Сайт
+### Сайт  
 На этапе выше были созданы две виртуальные машины vm-web1 и vm-web2 в разных зонах доступности для установки nginx.  
 
 Устанавливаю на них nginx через ansible.  
@@ -112,7 +112,7 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx1.png)  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx2.png)  
 
-### Мониторинг
+### Мониторинг  
 Установка Zabbix Server на созданную ранее vm-zabbix через ansible.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix.png)  
 
@@ -126,14 +126,14 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-server.png)  
 
 Установка Zabbix Agent  
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix-agent.png)
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix-agent.png)  
 
-### Логи
+### Логи  
 Установка Elasticsearch на созданную ранее vm-elastic через ansible.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-elastic.png)  
 
-Проверка Elasticsearch.
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/elastic-check.png)
+Проверка Elasticsearch.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/elastic-check.png)  
 
 Установка filebeat на на vm-web1 и vm-web2 через ansible.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-filebeat.png)  
@@ -141,7 +141,7 @@ Healthcheck
 Установка Kibana на созданную ранее vm-kibana через ansible.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-kibana.png)  
 
-Проверка Kibana
+Проверка Kibana  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-web.png)  
 
 Настраиваю.
@@ -150,17 +150,17 @@ Healthcheck
 И проверяю наличие событий. 
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-web2.png)  
 
-### Сеть
+### Сеть  
 Созданная VPC.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/vpc.png)  
 
 Созданные Security Groups.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/sec-groups.png)  
 
-### Резервное копирование
-Расписание снапшотов.
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snap-schedule.png)
+### Резервное копирование  
+Расписание снапшотов.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snap-schedule.png)  
 
-Создавшиеся по расписанию снимки.
-![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snapshots.png)
+Создавшиеся по расписанию снимки.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snapshots.png)  
 
