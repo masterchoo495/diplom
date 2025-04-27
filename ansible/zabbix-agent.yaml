@@ -1,0 +1,23 @@
+---
+- name: Install Zabbix Agent on web servers
+  hosts: web
+  become: true
+  tasks:
+    - name: Install Zabbix Agent
+      apt:
+        name:
+          - zabbix-agent
+        state: present
+
+    - name: Copy Zabbix Agent config
+      template:
+        src: /home/user/zabbix_agentd.conf.j2
+        dest: /etc/zabbix/zabbix_agentd.conf
+      notify:
+        - restart zabbix-agent
+
+  handlers:
+    - name: restart zabbix-agent
+      service:
+        name: zabbix-agent
+        state: restarted

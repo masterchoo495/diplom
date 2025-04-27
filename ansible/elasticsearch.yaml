@@ -1,0 +1,25 @@
+---
+- name: Install Elastic
+  hosts: elastic
+  become: yes
+
+  tasks:
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+
+  - name: Install Elasticsearch
+    apt:
+      deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/e/elasticsearch/elasticsearch-8.8.0-amd64.deb"
+
+  - name: Copy Elasticsearch config file
+    copy:
+      src: /home/user/elasticsearch.yml
+      dest: /etc/elasticsearch/elasticsearch.yml
+
+  - name: daemon-reload, enable and start Elasticsearch
+    systemd:
+      daemon-reload: true
+      name: elasticsearch.service
+      enabled: true
+      state: started

@@ -1,0 +1,28 @@
+---
+- name: Install Filebeat
+  hosts: web
+  become: yes
+  vars:
+    vm_kibana: vm-kibana:5601
+    vm_elastic: vm-elastic:9200
+  gather_facts: true
+  
+  tasks:
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+
+  - name: Install Filebeat
+    apt:
+      deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/f/filebeat/filebeat-8.8.0-amd64.deb"
+
+  - name: Copy Filebeat configuration file
+    template:
+      src: /home/user/filebeat.yml.j2
+      dest: /etc/filebeat/filebeat.yml
+
+  - name: Enable and start Filebeat
+    systemd:
+      name: filebeat.service
+      enabled: true
+      state: started

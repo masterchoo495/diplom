@@ -1,0 +1,22 @@
+---
+- name: Install kibana
+  hosts: kibana
+  become: yes
+  gather_facts: true
+
+  tasks:
+  - name: Install Kibana
+    apt:
+      deb: "https://mirror.yandex.ru/mirrors/elastic/8/pool/main/k/kibana/kibana-8.8.0-amd64.deb"
+
+  - name: Copy Kibana configuration file
+    template:
+      src: /home/user/kibana.yml.j2
+      dest: /etc/kibana/kibana.yml
+
+  - name: daemon-reload, enable and start Kibana
+    systemd:
+      daemon-reload: true
+      name: kibana.service
+      enabled: true
+      state: started

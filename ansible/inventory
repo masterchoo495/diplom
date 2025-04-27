@@ -1,0 +1,12 @@
+[web]
+vm-web1.ru-central1.internal
+vm-web2.ru-central1.internal
+
+[zabbix]
+vm-zabbix.ru-central1.internal
+
+[kibana]
+vm-kibana.ru-central1.internal
+
+[elastic]
+vm-elastic.ru-central1.internal
