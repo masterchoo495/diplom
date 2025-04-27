@@ -113,7 +113,7 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/nginx2.png)  
 
 ### Мониторинг
-Установка Zabbix Server через ansible.  
+Установка Zabbix Server на созданную ранее vm-zabbix через ansible.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix.png)  
 
 Переход по http://158.160.69.173  
@@ -126,9 +126,38 @@ Healthcheck
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-server.png)  
 
 ### Логи
+Установка Elasticsearch на созданную ранее vm-elastic через ansible.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-elastic.png)  
 
+Проверка Elasticsearch.
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/elastic-check.png)
+
+Установка filebeat на на vm-web1 и vm-web2 через ansible.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-filebeat.png)  
+
+Установка Kibana на созданную ранее vm-kibana через ansible.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-kibana.png)  
+
+Проверка Kibana
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-web.png)  
+
+Настраиваю.
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-int.png)  
+
+И проверяю наличие событий. 
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/kibana-web2.png)  
 
 ### Сеть
+Созданная VPC.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/vpc.png)  
 
+Созданные Security Groups.  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/sec-groups.png)  
 
 ### Резервное копирование
+Расписание снапшотов.
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snap-schedule.png)
+
+Создавшиеся по расписанию снимки.
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/snapshots.png)
+
