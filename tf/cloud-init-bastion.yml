@@ -14,11 +14,7 @@ write_files:
     permissions: "600"
     content: |
       -----BEGIN OPENSSH PRIVATE KEY-----
-      b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-      QyNTUxOQAAACDMa8U4KZzIjGyPPbMRqolLUmdGMqRisYOXD+McBRaVJAAAAJAlbvevJW73
-      rwAAAAtzc2gtZWQyNTUxOQAAACDMa8U4KZzIjGyPPbMRqolLUmdGMqRisYOXD+McBRaVJA
-      AAAEAJSxHb2pAByG+JmGE+NDKq/PAs7RtdB8jk/82qklTXGMxrxTgpnMiMbI89sxGqiUtS
-      Z0YypGKxg5cP4xwFFpUkAAAACnVidW50dUB2bTEBAgM=
+      
       -----END OPENSSH PRIVATE KEY-----
     defer: true
 
