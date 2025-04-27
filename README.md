@@ -125,6 +125,9 @@ Healthcheck
 Веб-интерфейс Zabbix Server  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/zabbix-server.png)  
 
+Установка Zabbix Agent  
+![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-zabbix-agent.png)
+
 ### Логи
 Установка Elasticsearch на созданную ранее vm-elastic через ansible.  
 ![alt text](https://github.com/masterchoo495/diplom/blob/main/img/install-elastic.png)  
